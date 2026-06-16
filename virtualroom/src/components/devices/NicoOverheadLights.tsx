@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 type LightState = {
   on: boolean
@@ -15,6 +15,20 @@ const DEFAULT_LIGHT_STATE: LightState = {
 
 export default function NicoOverheadLights() {
   const [light, setLight] = useState(DEFAULT_LIGHT_STATE)
+
+  useEffect(()=>{
+    async function loadLight(){
+        const response = await fetch("/api/devices/overhead-light")
+        const data = await response.json()
+        setLight(data)
+    }
+    loadLight()
+    //calls loadLight every 1 second
+    const poll = setInterval(()=>{
+        loadLight()
+    },1000)
+
+  },[])
 
   return (
     <div
